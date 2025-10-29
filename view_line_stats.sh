@@ -47,8 +47,9 @@ aggregate_stats() {
         if [ -f "$json_file" ]; then
             file_date=$(echo "$json_file" | sed 's/LINE_COUNT_STATS.json.//')
 
-            # Check if date is in range
-            if [[ "$file_date" >= "$start_date" ]] && [[ "$file_date" <= "$end_date" ]]; then
+            # Check if date is in range (string comparison for YYYY-MM-DD format)
+            if [[ "$file_date" > "$start_date" || "$file_date" == "$start_date" ]] && \
+               [[ "$file_date" < "$end_date" || "$file_date" == "$end_date" ]]; then
                 # Extract values from JSON (simple parsing)
                 total=$(grep '"total_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
                 code=$(grep '"code_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
@@ -157,7 +158,8 @@ case "$OPTION" in
         for json_file in LINE_COUNT_STATS.json.*; do
             if [ -f "$json_file" ]; then
                 file_date=$(echo "$json_file" | sed 's/LINE_COUNT_STATS.json.//')
-                if [[ "$file_date" >= "$START_DATE" ]] && [[ "$file_date" <= "$END_DATE" ]]; then
+                if [[ "$file_date" > "$START_DATE" || "$file_date" == "$START_DATE" ]] && \
+                   [[ "$file_date" < "$END_DATE" || "$file_date" == "$END_DATE" ]]; then
                     total=$(grep '"total_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
                     code=$(grep '"code_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
                     docs=$(grep '"docs_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
@@ -267,7 +269,9 @@ case "$OPTION" in
     *)
         # Check if it's a date range (2 date arguments)
         if [ -n "$START_DATE" ]; then
-            END_DATE="$OPTION"
+            # Swap: OPTION ($1) should be start, START_DATE ($2) should be end
+            END_DATE="$START_DATE"
+            START_DATE="$OPTION"
 
             echo "Date range: $START_DATE to $END_DATE"
             echo ""
@@ -298,7 +302,8 @@ case "$OPTION" in
                 for json_file in LINE_COUNT_STATS.json.*; do
                     if [ -f "$json_file" ]; then
                         file_date=$(echo "$json_file" | sed 's/LINE_COUNT_STATS.json.//')
-                        if [[ "$file_date" >= "$START_DATE" ]] && [[ "$file_date" <= "$END_DATE" ]]; then
+                        if [[ "$file_date" > "$START_DATE" || "$file_date" == "$START_DATE" ]] && \
+                           [[ "$file_date" < "$END_DATE" || "$file_date" == "$END_DATE" ]]; then
                             day_total=$(grep '"total_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
                             day_code=$(grep '"code_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
                             day_docs=$(grep '"docs_lines":' "$json_file" | awk '{print $2}' | tr -d ',')
