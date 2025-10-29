@@ -1,0 +1,35 @@
+# Line Counting System - Repository .gitignore
+
+# Test output files
+LINE_COUNT_LOG.md
+LINE_COUNT_STATS.json.*
+
+# Test directories
+test_output/
+.test/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
